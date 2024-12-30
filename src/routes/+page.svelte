@@ -1,36 +1,33 @@
 <script lang='ts'>
   import Header from './Header.svelte';
-  let status: 'OPEN' | 'CLOSE' = $state('OPEN');
-  
-  function toggleStatus() {
-    status = status === 'OPEN' ?
-    'CLOSE' : 'OPEN'
-  };
-  
-  let name = $state('Scotte');
-
+  let formState = $state({
+    name: "",
+    birthday: "",
+    step: 0,
+    error: ''
+  }); //state for a form
 </script>
 
-<div class="bigContainer">
-  <h1>Welcome to Svelte 5</h1>
-  <Header name={name}/>
-
-<input type="text" bind:value={name} />
-
-  <p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<main>
+  <p>Step: {formState.step + 1}</p>
+  {#if formState.error}
+  <p class="error">{formState.error}</p>
+  {/if}
+  {#if formState.birthday === '' }
+  <div>
+    <label for="bday"> Your Birthday</label>
+    <input type="date" id="bday" bind:value={formState.birthday}>
+  </div>
+  <button onclick={ () => {
+    if(formState.name !== "") {
+      formState.step += 1;
+      formState.error = "";
+    } else {
+      formState.error = "Empty name field"
+    }
+  }}>Next</button>
+  {:else }
+  <h2>birthday: {formState.birthday}</h2>
+{/if}
   
-  <p>the store is now {status}</p>
-  <button onclick={toggleStatus}>Toggle status</button>
-</div>
-
-<style>
-  .bigContainer {
-    background-color: rgb(34, 19, 82);
-    height: 100vh;
-  }
-  h1, p {
-    color: rgb(70, 185, 66);
-    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    font-weight: 300;
-  }
-    </style>
+</main>
